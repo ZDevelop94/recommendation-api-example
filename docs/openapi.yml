@@ -1,0 +1,73 @@
+openapi: 3.0.2
+info:
+  version: 0.1.0
+  title: Recommendation Service API (Reco)
+  description: |-
+    A service providing recommendations to a client
+paths:
+  '/recommendation/{id}':
+    get:
+      parameters:
+        - $ref: '#/components/parameters/movieIdPath'
+      responses:
+        '200':
+          description: -| Successfully return a list of movie recommendations
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Movie'
+        '404':
+          description: -| When a movie with the provided id does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceError'
+
+components:
+  schemas:
+    Movie:
+      type: object
+      required:
+        - id
+        - title
+        - length
+        - tags
+      properties:
+        id:
+          type: string
+          description:  This is the movie's id
+        title:
+          type: string
+          description: This is the movie's named title
+        length:
+          type: integer
+          description: This is the movie's runtime
+        tags:
+          type: array
+          items:
+            type: string
+          description: This is the movie's tags that categorise the movie, used for finding recommendations
+    ServiceError:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          description: Uniquely identifies an error
+        message:
+          type: string
+          description: A detailed message of the cause of the error
+
+
+  parameters:
+    movieIdPath:
+      name: id
+      in: path
+      description: This is the movie's id
+      required: true
+      allowEmptyValue: false
+      schema:
+        type: string
